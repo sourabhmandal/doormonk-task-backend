@@ -1,16 +1,24 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/mattn/go-sqlite3"
 )
 
 func NewSqliteDb(dbName string) (*sqlx.DB, error) {
 	_, dbPath := GetDatabaseFolderPath(dbName)
-	db, err := sqlx.Open("sqlite3", dbPath)
+
+	// Register SQLite3 driver explicitly
+	sql.Register("sqlite3_driver", &sqlite3.SQLiteDriver{})
+
+	fmt.Println(dbPath)
+
+	db, err := sqlx.Open("sqlite3_driver", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf(`error opening database: %w`, err)
 	}

@@ -15,6 +15,19 @@ import (
 )
 
 func main() {
+	config.LoadEnvConfig()
+	fmt.Println(config.EnvConfig.GIN_MODE, config.EnvConfig.GIN_MODE == gin.DebugMode)
+	// Validate the mode value
+	switch config.EnvConfig.GIN_MODE {
+	case gin.DebugMode, gin.ReleaseMode, gin.TestMode:
+		// Set the Gin mode
+		gin.SetMode(config.EnvConfig.GIN_MODE)
+	default:
+		// Default to debug mode if mode is invalid
+		fmt.Println("Invalid GIN_MODE value. Defaulting to release mode.")
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.Default()
 
 	// Set up custom validator
